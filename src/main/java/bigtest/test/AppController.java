@@ -1,7 +1,6 @@
 package bigtest.test;
 
 
-import bigtest.bean.LoginRequest;
 import bigtest.bean.ProxyResponse;
 import bigtest.validate.request.GetRequestValueValidate;
 import lombok.extern.slf4j.Slf4j;
@@ -10,12 +9,12 @@ import org.apache.http.message.BasicNameValuePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+
 
 
 @Slf4j
@@ -26,6 +25,7 @@ public class AppController {
     private ProxyService proxyService;
     @Autowired  //注入GetRequestValueValidate
     private GetRequestValueValidate getRequestValueValidate;
+
 
     @GetMapping(value = "/{projectId}/{version}/interfaceAd/getOther", produces = "application/json; charset=UTF-8")
     public String app(
@@ -52,6 +52,7 @@ public class AppController {
     public String appPm(
             HttpServletRequest servletRequest
     ) throws IOException {
+
         //获取请求的url
         StringBuffer url = servletRequest.getRequestURL();
         if (servletRequest.getQueryString() != null){
@@ -69,20 +70,10 @@ public class AppController {
 
 
 
-    //login
-    @PostMapping(value = "/1/7.5.12/bplapi/user/v1/loginByEmailPassword")
-    public String appLogin(HttpServletRequest servletRequest) throws UnsupportedEncodingException {
-        StringBuffer url = servletRequest.getRequestURL();
+    @PostMapping(value = "/{projectId}/{version}/bplapi/user/v1/loginByEmailPassword")
+    public String login(HttpServletRequest servletRequest) {
 
-        if (servletRequest.getQueryString() != null){
-            url.append("?").append(servletRequest.getQueryString());
-        }
-        String host = servletRequest.getHeader("host");
-        url = url.replace(7,21,host);
-
-        List<NameValuePair> loginrequestparma = new ArrayList<NameValuePair>();
-        //LoginRequest loginrequestparma = new LoginRequest();
-
+        List<BasicNameValuePair> loginrequestparma = new ArrayList<BasicNameValuePair>();
         loginrequestparma.add(new BasicNameValuePair("clientId",servletRequest.getParameter("clientId")));
         loginrequestparma.add(new BasicNameValuePair("crt",servletRequest.getParameter("crt")));
         loginrequestparma.add(new BasicNameValuePair("night",servletRequest.getParameter("night")));
@@ -101,29 +92,16 @@ public class AppController {
         loginrequestparma.add(new BasicNameValuePair("cid",servletRequest.getParameter("cid")));
         loginrequestparma.add(new BasicNameValuePair("username",servletRequest.getParameter("username")));
 
-
-        //loginrequestparma.add(servletRequest.getParameter("clientId"));
-//        loginrequestparma.setCrt(servletRequest.getParameter("crt"));
-//        loginrequestparma.setNight(servletRequest.getParameter("night"));
-//        loginrequestparma.setChannel(servletRequest.getParameter("channel"));
-//        loginrequestparma.setSign(servletRequest.getParameter("sign"));
-//        loginrequestparma.set_ssid(servletRequest.getParameter("_ssid"));
-//        loginrequestparma.set_imei(servletRequest.getParameter("_imei"));
-//        loginrequestparma.setTime_zone(servletRequest.getParameter("time_zone"));
-//        loginrequestparma.setBddid(servletRequest.getParameter("bddid"));
-//        loginrequestparma.setPassword(servletRequest.getParameter("password"));
-//        loginrequestparma.setClient(servletRequest.getParameter("client"));
-//        loginrequestparma.setTimeline(servletRequest.getParameter("timeline"));
-//        loginrequestparma.setDace_ssid(servletRequest.getParameter("dace_ssid"));
-//        loginrequestparma.setAndroid_id(servletRequest.getParameter("android_id"));
-//        loginrequestparma.setOaid(servletRequest.getParameter("oaid"));
-//        loginrequestparma.setCid(servletRequest.getParameter("cid"));
-//        loginrequestparma.setUsername(servletRequest.getParameter("username"));
-
-        ProxyResponse response = proxyService.proxyPost(String.valueOf(url),loginrequestparma);
-
-        log.info("ssssssssssssss"+response);
-        return response.getContent();
+        //String  uri = "https://games.mobileapi.hupu.com/1/7.5.12/bplapi/user/v1/loginByEmailPassword?client=c5d77e27f1bb726b";
+        StringBuffer url = servletRequest.getRequestURL();
+        log.info(String.valueOf(url));
+        if (servletRequest.getQueryString() != null){
+            url.append("?").append(servletRequest.getQueryString());
+        }
+        Cookie[] cookie = servletRequest.getCookies();
+        String Ua = servletRequest.getHeader("User-Agent");
+        String jsonStr = proxyService.httpPost(String.valueOf(url),loginrequestparma,cookie,Ua); //post请求
+        return jsonStr;
     }
 }
 
