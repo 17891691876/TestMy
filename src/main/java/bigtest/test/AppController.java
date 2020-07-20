@@ -38,8 +38,9 @@ public class AppController {
         if (servletRequest.getQueryString() != null){
             url.append("?").append(servletRequest.getQueryString());
         }
-        String host = servletRequest.getHeader("host");
-        //url = url.replace(7,21,host);
+        //String host = servletRequest.getHeader("host");
+        String host = "goblin-test.hupu.com";
+        url = url.replace(7,22,host);
         log.info(String.valueOf(url));
         //发起请求，获取返回值
         ProxyResponse response = proxyService.proxyGet(String.valueOf(url));

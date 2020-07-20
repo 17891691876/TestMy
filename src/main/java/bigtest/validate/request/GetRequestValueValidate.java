@@ -28,8 +28,8 @@ public class GetRequestValueValidate {
             String pxw = request.getParameter("pxw");
             String pxh = request.getParameter("pxh");
             PxwPxhValidate.validate(pxw,pxh);
-            String mac = request.getParameter("_mac");
-            MacValidate.validate(mac);
+//            String mac = request.getParameter("_mac");
+//            MacValidate.validate(mac);
             String idfa = request.getParameter("_idfa");
             IdfaValidate.validate(idfa);
             String oid = request.getParameter("_oid");
@@ -85,12 +85,12 @@ public class GetRequestValueValidate {
         OValidate.validate(o);
 
         //_ssid校验
-        String ssid = request.getParameter("_ssid");
-        try {
-            SsidValidate.validate(ssid);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+//        String ssid = request.getParameter("_ssid");
+//        try {
+//            SsidValidate.validate(ssid);
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
 
         //fromback校验
         if (hupu_ad_type.equals("4000101")){
