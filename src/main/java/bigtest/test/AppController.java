@@ -2,19 +2,22 @@ package bigtest.test;
 
 
 import bigtest.bean.ProxyResponse;
-import bigtest.validate.request.GetRequestValueValidate;
+import bigtest.validate.request.cm.GetCmRequestValueValidate;
+import bigtest.validate.request.getother.GetRequestValueValidate;
+import bigtest.validate.request.rm.GetRmRequestValueValidate;
+import bigtest.validate.request.pm.GetPmRequestValueValidate;
+import bigtest.validate.request.xm.GetXmRequestValueValidate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-
 
 
 @Slf4j
@@ -25,6 +28,10 @@ public class AppController {
     private ProxyService proxyService;
     @Autowired  //注入GetRequestValueValidate
     private GetRequestValueValidate getRequestValueValidate;
+    private GetRmRequestValueValidate getRmRequestValueValidate;
+    private GetPmRequestValueValidate getPmRequestValueValidate;
+    private GetCmRequestValueValidate getCmRequestValueValidate;
+    private GetXmRequestValueValidate getXmRequestValueValidate;
 
 
     @GetMapping(value = "/{projectId}/{version}/interfaceAd/getOther", produces = "application/json; charset=UTF-8")
@@ -38,9 +45,8 @@ public class AppController {
         if (servletRequest.getQueryString() != null){
             url.append("?").append(servletRequest.getQueryString());
         }
-        //String host = servletRequest.getHeader("host");
-        String host = "goblin-test.hupu.com";
-        url = url.replace(7,22,host);
+        String host = servletRequest.getHeader("host");
+        //url = url.replace(7,21,host);
         log.info(String.valueOf(url));
         //发起请求，获取返回值
         ProxyResponse response = proxyService.proxyGet(String.valueOf(url));
@@ -48,12 +54,77 @@ public class AppController {
 
     }
 
+    //rm
+    @GetMapping(value = "/rm", produces = "text/plain;charset=UTF-8")
+    public String appRm(
+            HttpServletRequest servletRequest
+    ) throws IOException {
+        getRmRequestValueValidate.getRmRequestValueValidate(servletRequest);
+        //获取请求的url
+        StringBuffer url = servletRequest.getRequestURL();
+        if (servletRequest.getQueryString() != null){
+            url.append("?").append(servletRequest.getQueryString());
+        }
+
+        String host = servletRequest.getHeader("host");
+        url = url.replace(7,21,"e-goblin-test.hupu.com");
+        log.info(String.valueOf(url));
+        //发起请求，获取返回值
+        ProxyResponse response = proxyService.proxyGet(String.valueOf(url));
+        return response.getContent();
+
+    }
+
+
     //pm
     @GetMapping(value = "/pm", produces = "text/plain;charset=UTF-8")
     public String appPm(
             HttpServletRequest servletRequest
     ) throws IOException {
+        getPmRequestValueValidate.getPmRequestValueValidate(servletRequest);
+        //获取请求的url
+        StringBuffer url = servletRequest.getRequestURL();
+        if (servletRequest.getQueryString() != null){
+            url.append("?").append(servletRequest.getQueryString());
+        }
 
+        String host = servletRequest.getHeader("host");
+        url = url.replace(7,21,"e-goblin-test.hupu.com");
+        log.info(String.valueOf(url));
+        //发起请求，获取返回值
+        ProxyResponse response = proxyService.proxyGet(String.valueOf(url));
+        return response.getContent();
+
+    }
+
+
+    //cm
+    @GetMapping(value = "/cm", produces = "text/plain;charset=UTF-8")
+    public String appCm(
+            HttpServletRequest servletRequest
+    ) throws IOException {
+        getCmRequestValueValidate.getCmRequestValueValidate(servletRequest);
+        //获取请求的url
+        StringBuffer url = servletRequest.getRequestURL();
+        if (servletRequest.getQueryString() != null) {
+            url.append("?").append(servletRequest.getQueryString());
+        }
+
+        String host = servletRequest.getHeader("host");
+        url = url.replace(7, 21, "e-goblin-test.hupu.com");
+        log.info(String.valueOf(url));
+        //发起请求，获取返回值
+        ProxyResponse response = proxyService.proxyGet(String.valueOf(url));
+        return response.getContent();
+    }
+
+
+    //xm
+    @GetMapping(value = "/xm", produces = "text/plain;charset=UTF-8")
+    public String appXm(
+            HttpServletRequest servletRequest
+    ) throws IOException {
+        getXmRequestValueValidate.getXmRequestValueValidate(servletRequest);
         //获取请求的url
         StringBuffer url = servletRequest.getRequestURL();
         if (servletRequest.getQueryString() != null){
@@ -71,10 +142,20 @@ public class AppController {
 
 
 
-    @PostMapping(value = "/{projectId}/{version}/bplapi/user/v1/loginByEmailPassword")
-    public String login(HttpServletRequest servletRequest) {
+    //login
+    @PostMapping(value = "/1/7.5.12/bplapi/user/v1/loginByEmailPassword")
+    public String appLogin(HttpServletRequest servletRequest) throws UnsupportedEncodingException {
+        StringBuffer url = servletRequest.getRequestURL();
 
-        List<BasicNameValuePair> loginrequestparma = new ArrayList<BasicNameValuePair>();
+        if (servletRequest.getQueryString() != null){
+            url.append("?").append(servletRequest.getQueryString());
+        }
+        String host = servletRequest.getHeader("host");
+        url = url.replace(7,21,host);
+
+        List<NameValuePair> loginrequestparma = new ArrayList<NameValuePair>();
+        //LoginRequest loginrequestparma = new LoginRequest();
+
         loginrequestparma.add(new BasicNameValuePair("clientId",servletRequest.getParameter("clientId")));
         loginrequestparma.add(new BasicNameValuePair("crt",servletRequest.getParameter("crt")));
         loginrequestparma.add(new BasicNameValuePair("night",servletRequest.getParameter("night")));
@@ -93,16 +174,29 @@ public class AppController {
         loginrequestparma.add(new BasicNameValuePair("cid",servletRequest.getParameter("cid")));
         loginrequestparma.add(new BasicNameValuePair("username",servletRequest.getParameter("username")));
 
-        //String  uri = "https://games.mobileapi.hupu.com/1/7.5.12/bplapi/user/v1/loginByEmailPassword?client=c5d77e27f1bb726b";
-        StringBuffer url = servletRequest.getRequestURL();
-        log.info(String.valueOf(url));
-        if (servletRequest.getQueryString() != null){
-            url.append("?").append(servletRequest.getQueryString());
-        }
-        Cookie[] cookie = servletRequest.getCookies();
-        String Ua = servletRequest.getHeader("User-Agent");
-        String jsonStr = proxyService.httpPost(String.valueOf(url),loginrequestparma,cookie,Ua); //post请求
-        return jsonStr;
+
+        //loginrequestparma.add(servletRequest.getParameter("clientId"));
+//        loginrequestparma.setCrt(servletRequest.getParameter("crt"));
+//        loginrequestparma.setNight(servletRequest.getParameter("night"));
+//        loginrequestparma.setChannel(servletRequest.getParameter("channel"));
+//        loginrequestparma.setSign(servletRequest.getParameter("sign"));
+//        loginrequestparma.set_ssid(servletRequest.getParameter("_ssid"));
+//        loginrequestparma.set_imei(servletRequest.getParameter("_imei"));
+//        loginrequestparma.setTime_zone(servletRequest.getParameter("time_zone"));
+//        loginrequestparma.setBddid(servletRequest.getParameter("bddid"));
+//        loginrequestparma.setPassword(servletRequest.getParameter("password"));
+//        loginrequestparma.setClient(servletRequest.getParameter("client"));
+//        loginrequestparma.setTimeline(servletRequest.getParameter("timeline"));
+//        loginrequestparma.setDace_ssid(servletRequest.getParameter("dace_ssid"));
+//        loginrequestparma.setAndroid_id(servletRequest.getParameter("android_id"));
+//        loginrequestparma.setOaid(servletRequest.getParameter("oaid"));
+//        loginrequestparma.setCid(servletRequest.getParameter("cid"));
+//        loginrequestparma.setUsername(servletRequest.getParameter("username"));
+
+        ProxyResponse response = proxyService.proxyPost(String.valueOf(url),loginrequestparma);
+
+        log.info("ssssssssssssss"+response);
+        return response.getContent();
     }
 }
 
