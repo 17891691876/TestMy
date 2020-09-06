@@ -14,6 +14,10 @@ import java.io.UnsupportedEncodingException;
 @Component  //声明一个组件
 public class GetPmRequestValueValidate {
      public static void getPmRequestValueValidate(HttpServletRequest request){
+         //获取request_id
+         String request_id2  = request.getParameter("request_id");
+
+
          //ad_type校验
          String ad_type=request.getParameter("ad_type");
          HupuAdType splitad_type=new HupuAdType(ad_type);

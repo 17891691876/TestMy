@@ -1,6 +1,7 @@
 package bigtest.test;
 
 
+import bigtest.Utils.JsonUtils;
 import bigtest.bean.ProxyResponse;
 import bigtest.validate.request.cm.GetCmRequestValueValidate;
 import bigtest.validate.request.getother.GetRequestValueValidate;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -28,16 +30,22 @@ public class AppController {
     private ProxyService proxyService;
     @Autowired  //注入GetRequestValueValidate
     private GetRequestValueValidate getRequestValueValidate;
+    @Autowired
     private GetRmRequestValueValidate getRmRequestValueValidate;
+    @Autowired
     private GetPmRequestValueValidate getPmRequestValueValidate;
+    @Autowired
     private GetCmRequestValueValidate getCmRequestValueValidate;
+    @Autowired
     private GetXmRequestValueValidate getXmRequestValueValidate;
+    @Autowired
+    private GetOtherresponse getOtherresponse;
 
 
     @GetMapping(value = "/{projectId}/{version}/interfaceAd/getOther", produces = "application/json; charset=UTF-8")
     public String app(
             HttpServletRequest servletRequest
-    ) throws IOException {
+            ) throws IOException {
         getRequestValueValidate.getRequestValueValidate(servletRequest);
         //获取请求的url
         StringBuffer url = servletRequest.getRequestURL();
@@ -50,6 +58,7 @@ public class AppController {
         log.info(String.valueOf(url));
         //发起请求，获取返回值
         ProxyResponse response = proxyService.proxyGet(String.valueOf(url));
+        getOtherresponse.getResponseValidate( response);
         return response.getContent();
 
     }
@@ -139,6 +148,24 @@ public class AppController {
 
     }
 
+    //gdt
+//    @GetMapping()
+//    public String gdtresponse(HttpServletRequest servletRequest,HttpServletResponse response) throws InterruptedException {
+//
+//        String newsloatid = servletRequest.getParameter("sloat_id");
+//        String old = "";
+//        String path="D://fmk/mfkj";
+//        //读取json文件转换成字符串
+//        JsonUtils.getJson(path);
+//
+//        JsonUtils.writeJsonFile(newsloatid,path);
+//
+//
+//        String url = "127.0.0.1:8090/gdttest";
+//        Thread.sleep(10);
+//        ProxyResponse response = proxyService.proxyGet(url);
+//        return response.getContent();
+//    }
 
 
     //login
