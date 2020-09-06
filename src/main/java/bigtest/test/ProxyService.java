@@ -43,36 +43,9 @@ public class ProxyService {
         return response;
     }
 
-//    public String proxyPost(String  url, List<NameValuePair> params) throws UnsupportedEncodingException {
-//        String response = "";
-//        // 初始化请求
-//        HttpPost httppost = new HttpPost(url);
-//
-//        // 发起请求
-////        StringEntity entity = new StringEntity(String.valueOf(params), "UTF-8");
-////        log.info(String.valueOf(params));
-//        httppost.setHeader("Content-Type", "application/x-www-form-urlencoded");
-//        httppost.setEntity(new UrlEncodedFormEntity(params,"UTF-8"));
-//        try (CloseableHttpResponse httpResponse = httpClient.execute(httppost)) {
-//            HttpEntity entity = httpResponse.getEntity();
-//            if (entity != null) {
-//                InputStream instreams = entity.getContent();
-//                response = convertStreamToString(instreams);
-//
-//            }
-//            //response.setContent(EntityUtils.toString(httpResponse.getEntity()));
-//        } catch (Exception e) {
-//            log.error("proxy err", e);
-//        }
-//        //log.info(response.getContent());
-//        return response;
-//    }
-
     public  String  httpPost(String uri, List<BasicNameValuePair> params, Cookie cookie[],String Ua) {
         String result = "";
         try {
-
-            //CloseableHttpClient httpclients = HttpClients.createDefault();
             CloseableHttpClient httpclient = HttpClients.createDefault();
             HttpPost httpPost = new HttpPost(uri);
             httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded"); // 添加请求头

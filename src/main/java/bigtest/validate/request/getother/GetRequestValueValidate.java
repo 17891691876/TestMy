@@ -14,12 +14,23 @@ public class GetRequestValueValidate {
         String hupu_ad_type = request.getParameter("hupu_ad_type");
         HupuAdType splitAdType = new HupuAdType(hupu_ad_type);
         Integer index = splitAdType.getIndex();
-        String targetId = splitAdType.getTargetId();
+        //String targetId = splitAdType.getTargetId();
         Integer type = splitAdType.getType();
-
         //_os校验
         String os = request.getParameter("_os");
         OsValidate.validate(os);
+        if (index.equals(18)){
+            String topic_id = request.getParameter("topic_id");
+            Topic_idValidate.validate(topic_id);
+        }else {
+            return;
+        }
+        if(index.equals(3)){
+            String fid = request.getParameter("fid");
+            FidValidate.validate(fid);
+        }else {
+            return;
+        }
 
         //ios 相关参数校验
         if (os.equals("2")){
@@ -128,8 +139,8 @@ public class GetRequestValueValidate {
         // TODO: 2020/5/24
         //news_first_navi校验
         //first_navi_numbers校验
-        //fid校验
-        //topic_id校验
+
+
 
 
 
