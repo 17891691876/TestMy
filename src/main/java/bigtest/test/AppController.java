@@ -9,8 +9,7 @@ import bigtest.validate.request.rm.GetRmRequestValueValidate;
 import bigtest.validate.request.pm.GetPmRequestValueValidate;
 import bigtest.validate.request.xm.GetXmRequestValueValidate;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,7 +40,6 @@ public class AppController {
     @Autowired
     private GetOtherresponse getOtherresponse;
 
-
     @GetMapping(value = "/{projectId}/{version}/interfaceAd/getOther", produces = "application/json; charset=UTF-8")
     public String app(
             HttpServletRequest servletRequest
@@ -58,7 +56,7 @@ public class AppController {
         log.info(String.valueOf(url));
         //发起请求，获取返回值
         ProxyResponse response = proxyService.proxyGet(String.valueOf(url));
-        getOtherresponse.getResponseValidate( response);
+        getOtherresponse.getResponseValidate(response);
         return response.getContent();
 
     }
@@ -101,6 +99,8 @@ public class AppController {
         log.info(String.valueOf(url));
         //发起请求，获取返回值
         ProxyResponse response = proxyService.proxyGet(String.valueOf(url));
+        String request_id = servletRequest.getParameter("request_id");
+        getOtherresponse.savePmNum(request_id);
         return response.getContent();
 
     }
